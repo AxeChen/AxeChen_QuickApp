@@ -1,0 +1,15 @@
+<template>
+        <web src="{{ url }}" id="web"></web>
+    </template>
+    
+    <script>
+        export default {
+            data: {
+                title: '个人博客',
+                url: 'https://axechen.github.io/'
+            },
+            onInit() {
+                this.$page.setTitleBar({ text: this.title })
+            }
+        }
+</script>

@@ -1,0 +1,210 @@
+<template>
+    <refresh @refresh="refresh" refreshing="{{isRefreshing}}">
+        <!-- 列表 -->
+        <list class="list_article" id="list" onscrollbottom="loadMoreData">
+            <!-- 列表元素，属性type值相同时，需要确保渲染中dom结构相同 -->
+            <block for="listData">
+                <list-item type="listItem" class="item-color" onclick="showDetails($item.projectLink,$item.link,$item.title)">
+                    <div class="div_item">
+                        <div class="div_user_info">
+                            <image class="head_avater" src="../Common/default_avatar.png"></image>
+                            <text class="user_name">{{$item.author}}</text>
+                            <image class="share" src="../Common/ic_share.png" onclick="shareArticle($item.projectLink,$item.link,$item.title)"></image>
+                        </div>
+                        <text class="content">{{$item.title}}</text>
+
+                        <div class="div_kind_time">
+                            <text class="article_kind">类型：{{$item.superChapterName}}</text>
+                            <text class="article_time">{{$item.niceDate}}</text>
+                        </div>
+                    </div>
+                </list-item>
+            </block>
+
+            <!-- 加载更多 -->
+            <list-item type="loadMore" class="load-more">
+                <progress type="circular" class="progress_loadmore"></progress>
+                <text class="text_load_more">加载更多</text>
+            </list-item>
+        </list>
+
+
+
+</template>
+
+<style>
+    .div_item {
+        display: flex;
+        padding-left: 30px;
+        padding-right: 30px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        flex-direction: column;
+        border-color: #eaeaea;
+        border-bottom-width: 20px;
+        width: 100%;
+
+    }
+
+    .user_name {
+        margin-left: 15px;
+        font-size: 26px;
+        flex: 1;
+    }
+
+    .div_item .div_user_info {
+        width: 100%;
+    }
+
+    .head_avater {
+        height: 45px;
+        width: 45px;
+    }
+
+    .share {
+        text-align: right;
+
+    }
+
+    .content {
+        margin-top: 15px;
+        margin-bottom: 15px;
+        font-size: 34px;
+        color: #2d2d2d;
+    }
+
+
+    .div_kind_time {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .div_kind_time .article_kind,
+    .div_kind_time .article_time {
+        font-size: 26px;
+        color: #999999;
+    }
+
+    .article_time {
+        flex: 1;
+        text-align: right;
+    }
+
+    .load-more {
+        height: 150px;
+        justify-content: center;
+        background-color: #eaeaea;
+    }
+
+    .text_load_more {
+        margin-left: 20px
+    }
+</style>
+
+<script>
+    // 网络请求需要用到的组件
+    import fetch from '@system.fetch'
+    // list需要用到的组件
+    import prompt from '@system.prompt'
+    // 页面跳转需要的路由组件
+    import router from '@system.router'
+    // 分享文章用到的分享组件
+    import share from '@system.share'
+
+    export default {
+        // 定义参数  
+        private: {
+            // 定义数据源
+            listData: [],
+            // 当前的页数
+            curPage: 0,
+            // 请求到的数据
+            responseData: [],
+            // 每页的条数
+            size: 0,
+            // 总共的页数
+            pageCount: 0,
+            // 总共的数据条数
+            total: 0,
+            // 数据刷新的tag
+            isRefreshing:false
+
+        },
+        // 初始化函数
+        onInit() {
+            this.$page.setTitleBar({ text: '玩安推荐' })
+            this.getArticleData()
+        },
+        refresh() {
+            // 刷新时需要重新取数据
+            this.curPage = 0;
+            this.isRefreshing = true;
+            this.getArticleData();
+        },
+        //获取网络数据
+        getArticleData() {
+            const self = this;
+            const url = 'http://www.wanandroid.com/article/list/' + self.curPage + '/json'
+            const ret = fetch.fetch({
+                url,
+                method: 'GET',
+                responseType: 'json',
+                success: function (ret) {
+                    self.responseData = ret.datas;
+                    self.size = ret.size;
+                    self.total = ret.total;
+                    self.pageCount = ret.pageCount;
+                    if (self.curPage > 0) {
+                        // 获取到数据之后将服务器的数据赋值给本地
+                        self.listData = self.listData.concat(ret.data.data.datas)
+                    } else {
+                        self.isRefreshing = false;
+                        self.listData = ret.data.data.datas;
+                    }
+                }
+            })
+        },
+        // 加载下一页数据
+        loadMoreData() {
+            const self = this;
+            // 先判断是不是最后一页
+            if (self.curPage > self.pageCount) {
+                return
+            }
+            // page++
+            self.curPage++;
+            // 请求数据
+            this.getArticleData();
+
+        }, showDetails(projectLink, link, gtitle) {
+            var gurl = projectLink === '' ? link : projectLink;
+            if (gurl !== '') {
+                router.push({
+                    uri: '/Webview',
+                    params: {
+                        title: gtitle,
+                        url: gurl
+                    }
+                })
+            }
+        }, shareArticle(projectLink, link, gtitle) {
+            var gurl = projectLink === '' ? link : projectLink;
+            if (gurl !== '') {
+                share.share({
+                    type: 'text/html',
+                    data: gtitle + ' 链接地址：' + gurl,
+                    success: function () {
+                        prompt.showToast({
+                            message: '分享成功！'
+                        })
+                    },
+                    fail: function (erromsg, errocode) {
+                        prompt.showToast({
+                            message: `${errocode}: ${erromsg}`
+                        })
+                    }
+                })
+            }
+        }
+    }
+</script>

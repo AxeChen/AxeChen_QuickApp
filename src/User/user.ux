@@ -1,0 +1,149 @@
+<template>
+    // 外层div
+    <div class="div_root">
+        <div class="div_user_info">
+            <stack class="stack_bg">
+                <image class="image_bg" src="../Common/ic_bg.png"></image>
+                <image class="img_avater" src="../Common/ic_avater.png"></image>
+                <div class="div_use_name">
+                    <text class="text_user_name">{{name}}</text>
+                    <text class="text_user_description">{{description}}</text>
+
+                    <div>
+                        <text class="text_link" onclick="openLink('github')">· github</text>
+                        <text class="text_link" onclick="openLink('jianshu')">· 简书</text> 
+                        <text class="text_link" onclick="openLink('blog')">· 个人博客</text>
+                    </div>
+                </div>
+            </stack>
+
+        </div>
+
+        <text class="text_say_hello">
+            {{sayHello}}
+        </text>
+
+        <text class="text_say_noduty">
+                免责声明：{{noDuty}}
+        </text>
+
+        <text class="text_say_hello">友情链接：</text>
+        <text class="text_friend_link"onclick="openLink('wanAndroid')" >WanAndroid主页</text>
+
+    </div>
+
+</template>
+
+<style>
+
+    .div_root{
+        flex-direction: column;
+    }
+
+
+    .stack_bg{
+        align-items: center;
+        flex-direction:column;
+    }
+
+    .div_use_name{
+        align-items: center;
+        flex-direction:column;
+        margin-top: 320px;
+    }
+
+    .img_avater {
+        height: 200px;
+        width: 200px;
+        margin-top: 100px;
+        justify-content: center;
+        border-radius: 1000px 100px 100px 100px;
+        border-color: #ffffff;
+        border-width: 10px;
+    }
+
+    .text_user_name{
+        font-size: 50px;
+        color: #ffffff;
+    }
+
+    .text_user_description{
+        margin-top: 10px;
+        color: #ffffff;
+    }
+
+    .text_link{
+        margin-top: 20px;
+        font-size: 25px;
+        color: #ffffff;
+        margin-left: 20px;
+        margin-right:20px;
+    }
+
+
+    .text_say_hello{
+        margin: 40px;
+        font-size: 35px;
+        color: #2d2d2d;
+    }
+
+    .text_say_noduty{
+        font-size: 35px;
+        margin-left: 40px;
+        margin-right: 40px;
+        color: #2d2d2d;
+    }
+
+    .text_friend_link{
+        font-size: 25px;
+        color: blue;
+        margin-left: 40px;
+        margin-right: 40px;
+    }
+</style>
+
+<script>
+    // 页面跳转需要的路由组件
+    import router from '@system.router'
+
+    export default {
+        private: {
+            name: '陈再峰',
+            description: '少壮不努力，长大做IT。',
+            sayHello:'Hello，我是陈再峰，一名安卓程序猿。本应用是我学习快应用之后的第一个快应用项目。其中“推荐博文”和“项目推荐”的数据均来自张鸿洋老师的“WanAndroid项目”，'
+            +'在此对张鸿洋老师以及广大开源开发者表示感谢！',
+            noDuty:'软件仅供技术交流，请勿用于商业及非法用途，如产生法律纠纷与本人无关。',
+            githubUrl:'https://github.com/AxeChen',
+            jianshu:'https://www.jianshu.com/u/05f7d21f41ed',
+            blog:'https://axechen.github.io/',
+            wanAndroid:'http://www.wanandroid.com/'
+        }
+        ,onInit() {
+            this.$page.setTitleBar({ text: '个人信息' })
+        },openLink(type){
+            var url = "";
+            var title = "";
+            if(type === 'github'){
+                url = this.githubUrl;
+                title = 'github · AxeChen';
+            }else if(type === 'jianshu'){
+                url = this.jianshu;
+                title = '简书 · AxeChen';
+            }else if(type === 'blog'){
+                url = this.blog;
+                title = '个人博客 · 再峰';
+            }else if(type === 'wanAndroid'){
+                url = this.wanAndroid;
+                title = '玩Android主页';
+            }
+            console.info(url+title)
+            router.push({
+                    uri: '/Webview',
+                    params: {
+                        title: title,
+                        url: url
+                    }
+                })
+        }
+    }
+</script>
