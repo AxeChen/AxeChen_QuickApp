@@ -107,11 +107,11 @@
     import router from '@system.router'
 
     export default {
-        private: {
+        private:{},
+        data: {
             name: '陈再峰',
             description: '少壮不努力，长大做IT。',
-            sayHello:'Hello，我是陈再峰，一名安卓程序猿。本应用是我学习快应用之后的第一个快应用项目。其中“推荐博文”和“项目推荐”的数据均来自张鸿洋老师的“WanAndroid项目”，'
-            +'在此对张鸿洋老师以及广大开源开发者表示感谢！',
+            sayHello:'Hello，我是陈再峰，一名安卓程序猿。本应用是我学习快应用之后的第一个快应用项目。其中“推荐博文”的数据来自张鸿洋老师的“WanAndroid项目。”',
             noDuty:'软件仅供技术交流，请勿用于商业及非法用途，如产生法律纠纷与本人无关。',
             githubUrl:'https://github.com/AxeChen',
             jianshu:'https://www.jianshu.com/u/05f7d21f41ed',

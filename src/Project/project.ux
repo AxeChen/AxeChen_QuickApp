@@ -13,8 +13,10 @@
                         </div>
                         <text class="content">{{$item.title}}</text>
 
+                        <image class="image_project_img" src="{{$item.envelopePic}}" alt="../Common/ic_start_load.png"></image>
+
                         <div class="div_kind_time">
-                            <text class="article_kind">类型：{{$item.superChapterName}}</text>
+                            <text class="article_kind" show="false">类型：{{$item.superChapterName}}</text>
                             <text class="article_time">{{$item.niceDate}}</text>
                         </div>
                     </div>
@@ -27,8 +29,6 @@
                 <text class="text_load_more">加载更多</text>
             </list-item>
         </list>
-
-
 
 </template>
 
@@ -50,6 +50,12 @@
         margin-left: 15px;
         font-size: 26px;
         flex: 1;
+    }
+
+    .image_project_img {
+        height: 350px;
+        width: 100%;
+        resize: cover;
     }
 
     .div_item .div_user_info {
@@ -74,6 +80,7 @@
 
 
     .div_kind_time {
+        margin-top: 10px;
         display: flex;
         flex-direction: row;
     }
@@ -101,6 +108,7 @@
 </style>
 
 <script>
+
     // 网络请求需要用到的组件
     import fetch from '@system.fetch'
     // list需要用到的组件
@@ -111,12 +119,11 @@
     import share from '@system.share'
 
     export default {
-        // 定义参数  
         data: {
             // 定义数据源
             listData: [],
             // 当前的页数
-            curPage: 0,
+            curPage: 1,
             // 请求到的数据
             responseData: [],
             // 每页的条数
@@ -126,8 +133,8 @@
             // 总共的数据条数
             total: 0,
             // 数据刷新的tag
-            isRefreshing:false
-
+            isRefreshing: false,
+            cid: 294
         },
         // 初始化函数
         onInit() {
@@ -137,12 +144,10 @@
             // 刷新时需要重新取数据
             this.curPage = 0;
             this.isRefreshing = true;
-            this.getArticleData();
-        },
-        //获取网络数据
-        getArticleData() {
+            this.getProjectData();
+        }, getProjectData() {
             const self = this;
-            const url = 'http://www.wanandroid.com/article/list/' + self.curPage + '/json'
+            const url = 'http://www.wanandroid.com/project/list/' + self.curPage + '/json?cid=' + self.cid;
             const ret = fetch.fetch({
                 url,
                 method: 'GET',
@@ -162,8 +167,7 @@
                     }
                 }
             })
-        },
-        // 加载下一页数据
+        },// 加载下一页数据
         loadMoreData() {
             const self = this;
             // 先判断是不是最后一页
@@ -173,7 +177,7 @@
             // page++
             self.curPage++;
             // 请求数据
-            this.getArticleData();
+            this.getProjectData();
 
         }, showDetails(projectLink, link, gtitle) {
             var gurl = projectLink === '' ? link : projectLink;
@@ -206,4 +210,6 @@
             }
         }
     }
+
+
 </script>

@@ -1,0 +1,111 @@
+<!-- 首页的UI架构,参用懒加载界面实现 -->
+<template>
+  <div class="div_main_content">
+      <tabs onchange="changeTabactive" index="{{currentIndex}}">
+          <tab-content class="tab-content">
+              <div class="tab-content-section">
+                  <recommend if="{{tabItems[0].show}}"></recommend>
+              </div>
+              <div class="tab-content-section">
+                  <blog if="{{tabItems[1].show}}"></blog>
+              </div>
+              <div class="tab-content-section">
+                  <user if="{{tabItems[2].show}}"></user>
+              </div>
+          </tab-content>
+      </tabs>
+
+      <!-- 底部展示布局 -->
+      <div class="div_tab_layout">
+          <div for="{{(index, item) in tabItems}}" class="div_tab_item" onclick="clickTabBar(index)">
+              <image class="image_tab" src="{{item.icon[currentIndex === index ? 1 : 0]}}"></image>
+              <text class="{{currentIndex === index ? 'text_active' : 'text_tab'}}"">{{item.text}}</text>
+            </div>
+      </div>
+  </div>
+</template>
+
+<!-- 将其他的几个界面引入依赖 -->
+<import name="recommend" src="../Recommend/recommed"></import>
+<import name="blog" src="../Project/project"></import>
+<import name="user" src="../User/user"></import>
+
+<style>
+  .div_main_content{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .div_tab_layout{
+      display: flex;
+      width: 100%;
+      flex-direction: row;
+      height: 130px;
+      align-items: center;
+  }
+
+  .div_tab_item {
+    flex: 1;
+    border-top-width: 1px;
+    border-top-color: #eeeeee; 
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    font-size: 12px;
+  }
+
+  .image_tab{                                                                                                                            
+    width: 50px;
+    height: 50px; 
+  }
+
+  .text_tab{
+    margin-top: 5px;
+    color: #a8a8a8;
+  }
+  .text_active{
+    margin-top: 5px;
+    color: #101315;
+  }
+</style>
+
+<script>
+  export default {
+      data() {
+          return {
+              currentIndex: 0,
+              tabItems: [
+                  {
+                      text: '首页',
+                      title:'好文推荐',
+                      icon: ['../Common/ic_home_unselect.png', '../Common/ic_home_select.png'],
+                      show: true
+                  },
+                  {
+                      text: '项目',
+                      title:'项目推荐',
+                      icon: ['../Common/ic_project_unselect.png', '../Common/ic_project_select.png'],
+                      show: false
+                  },
+                  {
+                      text: '我',
+                      title:'再峰',
+                      icon: ['../Common/ic_user_unselect.png', '../Common/ic_user_select.png'],
+                      show: false
+                  }
+              ]
+          }
+      }, clickTabBar(index) {
+          this.changeCurrent(index);
+      },
+      // 切换界面，设置标题 
+      changeCurrent(index) {
+          this.$page.setTitleBar({ text: this.tabItems[index].title })
+          this.tabItems[index].show = true
+          this.currentIndex = index
+      },changeTabactive (evt) {
+        this.changeCurrent(evt.index)
+      }
+  }
+</script>
