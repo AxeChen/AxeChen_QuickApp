@@ -1,38 +1,49 @@
 <template>
-    <refresh @refresh="refresh" refreshing="{{isRefreshing}}">
-        <!-- 列表 -->
-        <list class="list_article" id="list" onscrollbottom="loadMoreData">
-            <!-- 列表元素，属性type值相同时，需要确保渲染中dom结构相同 -->
-            <block for="listData">
-                <list-item type="listItem" class="item-color" onclick="showDetails($item.projectLink,$item.link,$item.title)">
-                    <div class="div_item">
-                        <div class="div_user_info">
-                            <image class="head_avater" src="../Common/default_avatar.png"></image>
-                            <text class="user_name">{{$item.author}}</text>
-                            <image class="share" src="../Common/ic_share.png" onclick="shareArticle($item.projectLink,$item.link,$item.title)"></image>
-                        </div>
-                        <text class="content">{{$item.title}}</text>
+    <div class="div_project_root">
+        <div class="div_project_kind">
+            <text>当前分类：</text>
+            <text>完整项目</text>
+        </div>
+        <refresh @refresh="refresh" refreshing="{{isRefreshing}}">
+            <!-- 列表 -->
+            <list class="list_article" id="list" onscrollbottom="loadMoreData">
+                <!-- 列表元素，属性type值相同时，需要确保渲染中dom结构相同 -->
+                <block for="listData">
+                    <list-item type="listItem" class="item-color" onclick="showDetails($item.projectLink,$item.link,$item.title)">
+                        <div class="div_item">
+                            <div class="div_user_info">
+                                <image class="head_avater" src="../Common/default_avatar.png"></image>
+                                <text class="user_name">{{$item.author}}</text>
+                                <image class="share" src="../Common/ic_share.png" onclick="shareArticle($item.projectLink,$item.link,$item.title)"></image>
+                            </div>
+                            <text class="content">{{$item.title}}</text>
 
-                        <image class="image_project_img" src="{{$item.envelopePic}}" alt="../Common/ic_start_load.png"></image>
+                            <image class="image_project_img" src="{{$item.envelopePic}}" alt="../Common/ic_start_load.png"></image>
 
-                        <div class="div_kind_time">
-                            <text class="article_kind" show="false">类型：{{$item.superChapterName}}</text>
-                            <text class="article_time">{{$item.niceDate}}</text>
+                            <div class="div_kind_time">
+                                <text class="article_kind" show="false">类型：{{$item.superChapterName}}</text>
+                                <text class="article_time">{{$item.niceDate}}</text>
+                            </div>
                         </div>
-                    </div>
+                    </list-item>
+                </block>
+
+                <!-- 加载更多 -->
+                <list-item type="loadMore" class="load-more" if="listData.length>0">
+                    <progress type="circular" class="progress_loadmore"></progress>
+                    <text class="text_load_more">加载更多</text>
                 </list-item>
-            </block>
-
-            <!-- 加载更多 -->
-            <list-item type="loadMore" class="load-more" if="listData.length>0">
-                <progress type="circular" class="progress_loadmore"></progress>
-                <text class="text_load_more">加载更多</text>
-            </list-item>
-        </list>
-
+            </list>
+    </div>
 </template>
 
 <style>
+
+    .div_project_root{
+        display: flex;
+        flex-direction: column;
+    }
+
     .div_item {
         display: flex;
         padding-left: 30px;
@@ -111,7 +122,7 @@
 
     // 网络请求需要用到的组件
     import fetch from '@system.fetch'
-    // list需要用到的组件
+
     import prompt from '@system.prompt'
     // 页面跳转需要的路由组件
     import router from '@system.router'

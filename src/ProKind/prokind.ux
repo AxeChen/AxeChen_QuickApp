@@ -1,0 +1,54 @@
+<template>
+    <!-- 展示项目分类信息 -->
+    <div class="div_pro_kind_root">
+        <list class="list_article" id="list" for="{{listData}}"  style="columns:{3}">
+            <list-item type="listItem" class="item_kind" onclick="kindClick">
+                <text>{{$item.name}}</text>
+            </list-item>
+        </list>
+    </div>
+
+</template>
+
+<style>
+    .div_pro_kind_root{
+        display: flex;
+        flex-direction: column;
+    }
+</style>
+
+<script>
+    // 网络请求需要用到的组件
+    import fetch from '@system.fetch'
+    // list需要用到的组件
+    import prompt from '@system.prompt'
+    // list需要用到的组件
+    // 请求种类的接口
+    export default {
+        data: {
+            // 数据源
+            listData: [],
+        }, onInit() {
+            // 初始化加载数据
+            this.getProjectKinds();
+        }, kindClick() {
+            // 点击某种类型，可以去查询数据
+
+        }, getProjectKinds() {
+            const self = this;
+            const url = 'http://www.wanandroid.com/project/tree/json'
+            const ret = fetch.fetch({
+                url,
+                method: 'GET',
+                responseType: 'json',
+                success: function (ret) {
+                    console.log(ret);
+                    self.listData = ret.data.data;
+                },
+                fail: function () {
+
+                }
+            })
+        }
+    }
+</script>
