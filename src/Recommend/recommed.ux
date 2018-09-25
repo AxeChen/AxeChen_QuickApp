@@ -101,6 +101,12 @@
 </style>
 
 <script>
+
+    // 将封装好的网络请求方法导入
+    import {
+        getArticle
+    } from '../Common/Api/home'
+
     // 网络请求需要用到的组件
     import fetch from '@system.fetch'
     // list需要用到的组件
@@ -126,7 +132,7 @@
             // 总共的数据条数
             total: 0,
             // 数据刷新的tag
-            isRefreshing:false
+            isRefreshing: false
 
         },
         // 初始化函数
@@ -142,26 +148,48 @@
         //获取网络数据
         getArticleData() {
             const self = this;
-            const url = 'http://www.wanandroid.com/article/list/' + self.curPage + '/json'
-            const ret = fetch.fetch({
-                url,
-                method: 'GET',
-                responseType: 'json',
-                success: function (ret) {
-                    console.info(ret)
+            getArticle(this.curPage)
+                .then((ret) => {
                     self.responseData = ret.datas;
                     self.size = ret.size;
                     self.total = ret.total;
                     self.pageCount = ret.pageCount;
+                    console.info(ret);
                     if (self.curPage > 0) {
                         // 获取到数据之后将服务器的数据赋值给本地
-                        self.listData = self.listData.concat(ret.data.data.datas)
+                        self.listData = self.listData.concat(ret.datas)
                     } else {
                         self.isRefreshing = false;
-                        self.listData = ret.data.data.datas;
+                        self.listData = ret.datas;
                     }
-                }
-            })
+                })
+                .catch((err) => {
+                    this.isRefreshing = false
+                })
+
+
+
+            // const self = this;
+            // const url = 'http://www.wanandroid.com/article/list/' + self.curPage + '/json'
+            // const ret = fetch.fetch({
+            //     url,
+            //     method: 'GET',
+            //     responseType: 'json',
+            //     success: function (ret) {
+            //         console.info(ret)
+            //         self.responseData = ret.datas;
+            //         self.size = ret.size;
+            //         self.total = ret.total;
+            //         self.pageCount = ret.pageCount;
+            //         if (self.curPage > 0) {
+            //             // 获取到数据之后将服务器的数据赋值给本地
+            //             self.listData = self.listData.concat(ret.data.data.datas)
+            //         } else {
+            //             self.isRefreshing = false;
+            //             self.listData = ret.data.data.datas;
+            //         }
+            //     }
+            // })
         },
         // 加载下一页数据
         loadMoreData() {

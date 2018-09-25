@@ -30,6 +30,7 @@
         <text class="text_say_hello">友情链接：</text>
         <text class="text_friend_link"onclick="openLink('wanAndroid')" >WanAndroid主页</text>
         <text class="text_friend_link"onclick="openLink('wanAndroidApp')" >WanAndroid APP 下载地址</text>
+        <text class="text_friend_link"onclick="openLink('appRes')" >本软件源码地址</text>
 
     </div>
 
@@ -120,7 +121,8 @@
             jianshu:'https://www.jianshu.com/u/05f7d21f41ed',
             blog:'https://www.axechen.com',
             wanAndroid:'http://www.wanandroid.com/',
-            wanAndroidApp:'https://www.coolapk.com/apk/com.mg.axechen.wanandroid'
+            wanAndroidApp:'https://www.coolapk.com/apk/com.mg.axechen.wanandroid',
+            appRes:'https://github.com/AxeChen/AxeChen_QuickApp'
         }
         ,onInit() {
             this.$page.setTitleBar({ text: '个人信息' })
@@ -142,6 +144,9 @@
             }else if(type === 'wanAndroidApp'){
                 url = this.wanAndroidApp;
                 title = '玩Android APP 下载';
+            }else if(type === 'appRes'){
+                url = this.appRes;
+                title = '本应用源代码';
             }
             console.info(url+title)
             router.push({

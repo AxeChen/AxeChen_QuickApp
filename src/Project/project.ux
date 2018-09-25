@@ -6,8 +6,8 @@
             <text class="text_kind_select" onclick="showKindList()">{{kindName}}</text>
         </div>
         <refresh @refresh="refresh" refreshing="{{isRefreshing}}">
-        <stack scrollpage="false">
-            <div class="div_list" if="{{showList}}">
+            <stack scrollpage="false">
+                <div class="div_list" if="{{showList}}">
                     <!-- 列表 -->
                     <list class="list_article" id="list" onscrollbottom="loadMoreData" scrollpage="false">
                         <!-- 列表元素，属性type值相同时，需要确保渲染中dom结构相同 -->
@@ -32,24 +32,24 @@
                         </block>
 
                         <!-- 加载更多 -->
-                        <list-item type="loadMore" class="load-more" if="{{listData.length<total}}" >
+                        <list-item type="loadMore" class="load-more" if="{{listData.length<total}}">
                             <progress type="circular" class="progress_loadmore"></progress>
                             <text class="text_load_more">加载更多</text>
                         </list-item>
                     </list>
-                
-            </div>
 
-            <div if="{{showKind}}" class="div_kind" >
-                <list class="list_kind" id="kind" style="columns:3" >
-                    <list-item type="listItem" class="item_kind" for="{{kindsData}}" onclick="kindClick($item.id,$item.name)">
-                        <text class="{{cid === $item.id? 'item_kind_select':'item_kind' }}">{{$item.name}}</text>
-                    </list-item>
-                </list>
-            </div>
+                </div>
 
-        </stack>
-    </refresh>
+                <div if="{{showKind}}" class="div_kind">
+                    <list class="list_kind" id="kind" style="columns:3">
+                        <list-item type="listItem" class="item_kind" for="{{kindsData}}" onclick="kindClick($item.id,$item.name)">
+                            <text class="{{cid === $item.id? 'item_kind_select':'item_kind' }}">{{$item.name}}</text>
+                        </list-item>
+                    </list>
+                </div>
+
+            </stack>
+        </refresh>
     </div>
 </template>
 
@@ -179,12 +179,19 @@
         color: #101315;
     }
 
-    .text_item_select,.text_kind_select {
+    .text_item_select,
+    .text_kind_select {
         color: #101315;
     }
 </style>
 
 <script>
+    // 将封装好的网络请求方法导入
+    import {
+        getProjectTree,
+        getArticleByTreeId
+    } from '../Common/Api/project'
+
 
     // 网络请求需要用到的组件
     import fetch from '@system.fetch'
@@ -214,8 +221,8 @@
             isRefreshing: false,
             cid: 294,
             showKind: false,
-            showList:false,
-            kindName:""
+            showList: false,
+            kindName: ""
         },
         // 初始化函数
         onInit() {
@@ -228,28 +235,49 @@
             this.getProjectData();
         }, getProjectData() {
             const self = this;
-            const url = 'http://www.wanandroid.com/project/list/' + self.curPage + '/json?cid=' + self.cid;
-            const ret = fetch.fetch({
-                url, 
-                method: 'GET',
-                responseType: 'json',
-                success: function (ret) {
-                    console.info(ret)
+            getArticleByTreeId(this.curPage,this.cid)
+            .then((ret)=>{
+                console.info(ret)
                     self.responseData = ret.datas;
                     self.size = ret.size;
-                    self.total = ret.data.data.total;
-                    console.info("长度为："+self.total);
+                    self.total = ret.total;
                     self.pageCount = ret.pageCount;
                     if (self.curPage > 0) {
                         // 获取到数据之后将服务器的数据赋值给本地
-                        self.listData = self.listData.concat(ret.data.data.datas)
+                        self.listData = self.listData.concat(ret.datas)
                     } else {
                         self.isRefreshing = false;
-                        self.listData = ret.data.data.datas;
+                        self.listData = ret.datas;
                     }
                     self.showList = true;
-                }
-            })
+            }).catch((error)=>{
+                    self.isRefreshing = false;
+            });
+
+
+            // const self = this;
+            // const url = 'http://www.wanandroid.com/project/list/' + self.curPage + '/json?cid=' + self.cid;
+            // const ret = fetch.fetch({
+            //     url,
+            //     method: 'GET',
+            //     responseType: 'json',
+            //     success: function (ret) {
+            //         console.info(ret)
+            //         self.responseData = ret.datas;
+            //         self.size = ret.size;
+            //         self.total = ret.data.data.total;
+            //         console.info("长度为：" + self.total);
+            //         self.pageCount = ret.pageCount;
+            //         if (self.curPage > 0) {
+            //             // 获取到数据之后将服务器的数据赋值给本地
+            //             self.listData = self.listData.concat(ret.data.data.datas)
+            //         } else {
+            //             self.isRefreshing = false;
+            //             self.listData = ret.data.data.datas;
+            //         }
+            //         self.showList = true;
+            //     }
+            // })
         },// 加载下一页数据
         loadMoreData() {
             const self = this;
@@ -292,28 +320,35 @@
                 })
             }
         }, getProjectKinds() {
-            const self = this;
-            const url = 'http://www.wanandroid.com/project/tree/json'
-            const ret = fetch.fetch({
-                url,
-                method: 'GET',
-                responseType: 'json',
-                success: function (ret) {
-                    console.log(ret);
-                    console.log("进到这边了");
-                    self.kindsData = ret.data.data;
-                    self.cid = self.kindsData[0].id;
-                    self.kindName = self.kindsData[0].name;
-                    console.log("进到这边了");
-                    self.refresh();
-                },
-                fail: function () {
 
-                }
-            })
+            const self = this;
+            getProjectTree().then((ret) => {
+                self.kindsData = ret;
+                self.cid = self.kindsData[0].id;
+                self.kindName = self.kindsData[0].name;
+                self.refresh();
+            }).catch((error) => {
+                self.isRefreshing = false;
+            });
+
+
+            // const url = 'http://www.wanandroid.com/project/tree/json'
+            // const ret = fetch.fetch({
+            //     url,
+            //     method: 'GET',
+            //     responseType: 'json',
+            //     success: function (ret) {
+            //         console.log(ret);
+            //         console.log("进到这边了");
+
+            //     },
+            //     fail: function () {
+
+            //     }
+            // })
         }, showKindList() {
             this.showKind = !this.showKind;
-        },kindClick(id,name){
+        }, kindClick(id, name) {
             const self = this;
             this.showKind = false;
             this.cid = id;
