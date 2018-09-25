@@ -1,45 +1,76 @@
 <template>
     <div class="div_project_root">
+
         <div class="div_project_kind">
-            <text>当前分类：</text>
-            <text>完整项目</text>
+            <text class="text_kind_title">当前分类：</text>
+            <text class="text_kind_select" onclick="showKindList()">{{kindName}}</text>
         </div>
         <refresh @refresh="refresh" refreshing="{{isRefreshing}}">
-            <!-- 列表 -->
-            <list class="list_article" id="list" onscrollbottom="loadMoreData">
-                <!-- 列表元素，属性type值相同时，需要确保渲染中dom结构相同 -->
-                <block for="listData">
-                    <list-item type="listItem" class="item-color" onclick="showDetails($item.projectLink,$item.link,$item.title)">
-                        <div class="div_item">
-                            <div class="div_user_info">
-                                <image class="head_avater" src="../Common/default_avatar.png"></image>
-                                <text class="user_name">{{$item.author}}</text>
-                                <image class="share" src="../Common/ic_share.png" onclick="shareArticle($item.projectLink,$item.link,$item.title)"></image>
-                            </div>
-                            <text class="content">{{$item.title}}</text>
+        <stack scrollpage="false">
+            <div class="div_list" if="{{showList}}">
+                    <!-- 列表 -->
+                    <list class="list_article" id="list" onscrollbottom="loadMoreData" scrollpage="false">
+                        <!-- 列表元素，属性type值相同时，需要确保渲染中dom结构相同 -->
+                        <block for="listData">
+                            <list-item type="listItem" class="item-color" onclick="showDetails($item.projectLink,$item.link,$item.title)">
+                                <div class="div_item">
+                                    <div class="div_user_info">
+                                        <image class="head_avater" src="../Common/default_avatar.png"></image>
+                                        <text class="user_name">{{$item.author}}</text>
+                                        <image class="share" src="../Common/ic_share.png" onclick="shareArticle($item.projectLink,$item.link,$item.title)"></image>
+                                    </div>
+                                    <text class="content">{{$item.title}}</text>
 
-                            <image class="image_project_img" src="{{$item.envelopePic}}" alt="../Common/ic_start_load.png"></image>
+                                    <image class="image_project_img" src="{{$item.envelopePic}}" alt="../Common/ic_start_load.png"></image>
 
-                            <div class="div_kind_time">
-                                <text class="article_kind" show="false">类型：{{$item.superChapterName}}</text>
-                                <text class="article_time">{{$item.niceDate}}</text>
-                            </div>
-                        </div>
+                                    <div class="div_kind_time">
+                                        <text class="article_kind" show="false">类型：{{$item.superChapterName}}</text>
+                                        <text class="article_time">{{$item.niceDate}}</text>
+                                    </div>
+                                </div>
+                            </list-item>
+                        </block>
+
+                        <!-- 加载更多 -->
+                        <list-item type="loadMore" class="load-more" if="{{listData.length<total}}" >
+                            <progress type="circular" class="progress_loadmore"></progress>
+                            <text class="text_load_more">加载更多</text>
+                        </list-item>
+                    </list>
+                
+            </div>
+
+            <div if="{{showKind}}" class="div_kind" >
+                <list class="list_kind" id="kind" style="columns:3" >
+                    <list-item type="listItem" class="item_kind" for="{{kindsData}}" onclick="kindClick($item.id,$item.name)">
+                        <text class="{{cid === $item.id? 'item_kind_select':'item_kind' }}">{{$item.name}}</text>
                     </list-item>
-                </block>
+                </list>
+            </div>
 
-                <!-- 加载更多 -->
-                <list-item type="loadMore" class="load-more" if="listData.length>0">
-                    <progress type="circular" class="progress_loadmore"></progress>
-                    <text class="text_load_more">加载更多</text>
-                </list-item>
-            </list>
+        </stack>
+    </refresh>
     </div>
 </template>
 
 <style>
+    .stack_bg {
+        align-items: center;
+        flex-direction: column;
+        display: flex;
+        width: 100px;
+        height: 100px;
+        background-color: #ffffff;
+    }
 
-    .div_project_root{
+    .div_kind {
+        height: 100%;
+        background-color: #ffffff;
+        border-color: #eaeaea;
+        border-bottom-width: 1px;
+    }
+
+    .div_project_root {
         display: flex;
         flex-direction: column;
     }
@@ -116,6 +147,41 @@
     .text_load_more {
         margin-left: 20px
     }
+
+    .div_project_kind {
+        padding-left: 30px;
+        padding-right: 30px;
+        height: 80px;
+        justify-content: center;
+        border-color: #eaeaea;
+        border-bottom-width: 1px;
+    }
+
+    .text_kind_title {
+        flex: 1;
+    }
+
+
+    .item_kind {
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        margin: 5px;
+    }
+
+    .item_kind_select {
+        justify-content: center;
+        align-items: center;
+        padding: 10px 10px, 10px, 10px;
+        margin: 5px;
+        border-bottom-color: #101315;
+        border-bottom-width: 1px;
+        color: #101315;
+    }
+
+    .text_item_select,.text_kind_select {
+        color: #101315;
+    }
 </style>
 
 <script>
@@ -131,6 +197,7 @@
 
     export default {
         data: {
+            kindsData: [],
             // 定义数据源
             listData: [],
             // 当前的页数
@@ -145,11 +212,14 @@
             total: 0,
             // 数据刷新的tag
             isRefreshing: false,
-            cid: 294
+            cid: 294,
+            showKind: false,
+            showList:false,
+            kindName:""
         },
         // 初始化函数
         onInit() {
-            this.refresh();
+            this.getProjectKinds();
         },
         refresh() {
             // 刷新时需要重新取数据
@@ -160,14 +230,15 @@
             const self = this;
             const url = 'http://www.wanandroid.com/project/list/' + self.curPage + '/json?cid=' + self.cid;
             const ret = fetch.fetch({
-                url,
+                url, 
                 method: 'GET',
                 responseType: 'json',
                 success: function (ret) {
                     console.info(ret)
                     self.responseData = ret.datas;
                     self.size = ret.size;
-                    self.total = ret.total;
+                    self.total = ret.data.data.total;
+                    console.info("长度为："+self.total);
                     self.pageCount = ret.pageCount;
                     if (self.curPage > 0) {
                         // 获取到数据之后将服务器的数据赋值给本地
@@ -176,6 +247,7 @@
                         self.isRefreshing = false;
                         self.listData = ret.data.data.datas;
                     }
+                    self.showList = true;
                 }
             })
         },// 加载下一页数据
@@ -219,6 +291,34 @@
                     }
                 })
             }
+        }, getProjectKinds() {
+            const self = this;
+            const url = 'http://www.wanandroid.com/project/tree/json'
+            const ret = fetch.fetch({
+                url,
+                method: 'GET',
+                responseType: 'json',
+                success: function (ret) {
+                    console.log(ret);
+                    console.log("进到这边了");
+                    self.kindsData = ret.data.data;
+                    self.cid = self.kindsData[0].id;
+                    self.kindName = self.kindsData[0].name;
+                    console.log("进到这边了");
+                    self.refresh();
+                },
+                fail: function () {
+
+                }
+            })
+        }, showKindList() {
+            this.showKind = !this.showKind;
+        },kindClick(id,name){
+            const self = this;
+            this.showKind = false;
+            this.cid = id;
+            this.kindName = name;
+            this.refresh();
         }
     }
 

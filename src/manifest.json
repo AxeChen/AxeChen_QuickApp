@@ -43,8 +43,6 @@
         "component": "main"
       },"Project":{
         "component": "project"
-      },"ProKind":{
-        "component": "prokind"
       }
     }
   },

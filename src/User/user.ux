@@ -29,6 +29,7 @@
 
         <text class="text_say_hello">友情链接：</text>
         <text class="text_friend_link"onclick="openLink('wanAndroid')" >WanAndroid主页</text>
+        <text class="text_friend_link"onclick="openLink('wanAndroidApp')" >WanAndroid APP 下载地址</text>
 
     </div>
 
@@ -111,12 +112,15 @@
         data: {
             name: '陈再峰',
             description: '少壮不努力，长大做IT。',
-            sayHello:'Hello，我是陈再峰，一名安卓程序猿。本应用是我学习快应用之后的第一个快应用项目。其中“推荐博文”的数据来自张鸿洋老师的“WanAndroid项目。”',
+            sayHello:'Hello，我是陈再峰，一名安卓程序猿。这个应用是我学习快应用之后的第一个快应用项目。'+
+            '其中“推荐博文”和“项目推荐”的数据来自张鸿洋老师的“WanAndroid项目。由于这个应用没有WanAndroid的用户体系无法进行收藏操作，'+
+            '暂时只能将链接分享出去。',
             noDuty:'软件仅供技术交流，请勿用于商业及非法用途，如产生法律纠纷与本人无关。',
             githubUrl:'https://github.com/AxeChen',
             jianshu:'https://www.jianshu.com/u/05f7d21f41ed',
-            blog:'https://axechen.github.io/',
-            wanAndroid:'http://www.wanandroid.com/'
+            blog:'https://www.axechen.com',
+            wanAndroid:'http://www.wanandroid.com/',
+            wanAndroidApp:'https://www.coolapk.com/apk/com.mg.axechen.wanandroid'
         }
         ,onInit() {
             this.$page.setTitleBar({ text: '个人信息' })
@@ -135,6 +139,9 @@
             }else if(type === 'wanAndroid'){
                 url = this.wanAndroid;
                 title = '玩Android主页';
+            }else if(type === 'wanAndroidApp'){
+                url = this.wanAndroidApp;
+                title = '玩Android APP 下载';
             }
             console.info(url+title)
             router.push({

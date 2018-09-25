@@ -33,6 +33,12 @@
 <style>
   .div_main_content{
     display: flex;
+    height: 100%;
+    flex-direction: column;
+  }
+
+  .tab-content-section{
+    display: flex;
     flex-direction: column;
   }
 
