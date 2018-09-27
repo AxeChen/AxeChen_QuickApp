@@ -19,7 +19,7 @@
       <div class="div_tab_layout">
           <div for="{{(index, item) in tabItems}}" class="div_tab_item" onclick="clickTabBar(index)">
               <image class="image_tab" src="{{item.icon[currentIndex === index ? 1 : 0]}}"></image>
-              <text class="{{currentIndex === index ? 'text_active' : 'text_tab'}}"">{{item.text}}</text>
+              <text class="{{currentIndex === index ? 'text_active' : 'text_tab'}}">{{item.text}}</text>
             </div>
       </div>
   </div>
@@ -95,7 +95,7 @@
                       show: false
                   },
                   {
-                      text: '我',
+                      text: '作者',
                       title:'再峰',
                       icon: ['../Common/ic_user_unselect.png', '../Common/ic_user_select.png'],
                       show: false

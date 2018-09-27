@@ -3,7 +3,7 @@
     <div class="div_root">
         <div class="div_user_info">
             <stack class="stack_bg">
-                <image class="image_bg" src="../Common/ic_bg.png"></image>
+                <image class="image_bg" src="https://myimage-1256200682.cos.ap-chengdu.myqcloud.com/myImage/ic_bg.png?q-sign-algorithm=sha1&q-ak=AKIDqIYjfwp3TePWzermNTA6303LszIeTGEE&q-sign-time=1538031387;1538033187&q-key-time=1538031387;1538033187&q-header-list=&q-url-param-list=&q-signature=badfe9f15017baebd935dc8d6efa6e701847aad0&x-cos-security-token=8df89abbbaf9c87e9e39dffe2813f9ee0fdce27d10001&response-content-disposition=attachment"></image>
                 <image class="img_avater" src="../Common/ic_avater.png"></image>
                 <div class="div_use_name">
                     <text class="text_user_name">{{name}}</text>
@@ -42,10 +42,11 @@
         flex-direction: column;
     }
 
-
     .stack_bg{
         align-items: center;
         flex-direction:column;
+        padding-bottom: 10px;
+        height: 550px;
     }
 
     .div_use_name{
@@ -59,7 +60,7 @@
         width: 200px;
         margin-top: 100px;
         justify-content: center;
-        border-radius: 1000px 100px 100px 100px;
+        border-radius: 100px 100px 100px 100px;
         border-color: #ffffff;
         border-width: 10px;
     }
@@ -114,12 +115,12 @@
             name: '陈再峰',
             description: '少壮不努力，长大做IT。',
             sayHello:'Hello，我是陈再峰，一名安卓程序猿。这个应用是我学习快应用之后的第一个快应用项目。'+
-            '其中“推荐博文”和“项目推荐”的数据来自张鸿洋老师的“WanAndroid项目。由于这个应用没有WanAndroid的用户体系无法进行收藏操作，'+
+            '其中“推荐博文”和“项目推荐”的数据来自张鸿洋老师的WanAndroid开放API。由于这个应用没有WanAndroid的用户体系无法进行收藏操作，'+
             '暂时只能将链接分享出去。',
             noDuty:'软件仅供技术交流，请勿用于商业及非法用途，如产生法律纠纷与本人无关。',
             githubUrl:'https://github.com/AxeChen',
             jianshu:'https://www.jianshu.com/u/05f7d21f41ed',
-            blog:'https://www.axechen.com',
+            blog:'https://axechen.github.io/',
             wanAndroid:'http://www.wanandroid.com/',
             wanAndroidApp:'https://www.coolapk.com/apk/com.mg.axechen.wanandroid',
             appRes:'https://github.com/AxeChen/AxeChen_QuickApp'

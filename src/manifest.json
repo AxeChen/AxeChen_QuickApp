@@ -17,26 +17,15 @@
     { "origin": "*" }
   ],
   "config": {
-    "logLevel": "debug"
+    "logLevel": "off"
   },
   "router": {
     "entry": "Main",
     "pages": {
-      "Demo": {
-        "component": "index"
-      },
-      "DemoDetail": {
-        "component": "index"
-      },
-      "About": {
-        "component": "index"
-      },
       "Recommend":{
         "component": "recommed"
       },"Webview":{
         "component": "webview"
-      },"Blog":{
-        "component": "blog"
       },"User":{
         "component": "user"
       },"Main":{
@@ -51,15 +40,8 @@
     "titleBarTextColor": "#fffff",
     "menu": true,
     "pages": {
-      "Demo": {
-        "titleBarText": "示例页",
-        "menu": false
-      },
       "Main": {
         "titleBarText": "好文推荐"
-      },
-      "About": {
-        "menu": false
       }
     }
   }

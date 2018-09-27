@@ -6,10 +6,10 @@
             <text class="text_kind_select" onclick="showKindList()">{{kindName}}</text>
         </div>
         <refresh @refresh="refresh" refreshing="{{isRefreshing}}">
-            <stack scrollpage="false">
+            <stack>
                 <div class="div_list" if="{{showList}}">
                     <!-- 列表 -->
-                    <list class="list_article" id="list" onscrollbottom="loadMoreData" scrollpage="false">
+                    <list class="list_article" id="list" onscrollbottom="loadMoreData" >
                         <!-- 列表元素，属性type值相同时，需要确保渲染中dom结构相同 -->
                         <block for="listData">
                             <list-item type="listItem" class="item-color" onclick="showDetails($item.projectLink,$item.link,$item.title)">

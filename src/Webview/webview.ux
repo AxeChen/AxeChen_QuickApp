@@ -3,6 +3,10 @@
 </template>
 
 <script>
+
+    // 分享文章用到的分享组件
+    import share from '@system.share'
+
     export default {
         data: {
             title: '',
@@ -10,6 +14,24 @@
         },
         onInit() {
             this.$page.setTitleBar({ text: this.title })
+        },onMenuPress(){
+            var gurl = this.url;
+            if (gurl !== '') {
+                share.share({
+                    type: 'text/html',
+                    data: this.title + ' 链接地址：' + gurl,
+                    success: function () {
+                        prompt.showToast({
+                            message: '分享成功！'
+                        })
+                    },
+                    fail: function (erromsg, errocode) {
+                        prompt.showToast({
+                            message: `${errocode}: ${erromsg}`
+                        })
+                    }
+                })
+            }
         }
     }
 </script>
