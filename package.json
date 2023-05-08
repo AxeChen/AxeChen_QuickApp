@@ -28,6 +28,7 @@
     "koa-body": "^2.5.0",
     "koa-router": "^7.2.1",
     "socket.io": "^2.1.0",
-    "webpack": "^3.11.0"
+    "webpack": "^3.11.0",
+    "minimist": ">=1.2.6"
   }
 }
